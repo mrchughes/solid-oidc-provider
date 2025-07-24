@@ -1,0 +1,44 @@
+{
+    "info": {
+        "name": "Solid OIDC Provider Workspace",
+        "description": "API collections for the Solid OIDC Provider service"
+    },
+    "collections": [
+        {
+            "name": "Solid OIDC Provider",
+            "path": "./solid_oidc_collection.json"
+        }
+    ],
+    "environments": [
+        {
+            "name": "Local Development",
+            "values": [
+                {
+                    "key": "oidc_provider_url",
+                    "value": "http://localhost:3001",
+                    "enabled": true
+                },
+                {
+                    "key": "webid",
+                    "value": "https://user.example.org/profile/card#me",
+                    "enabled": true
+                },
+                {
+                    "key": "access_token",
+                    "value": "dummy_token",
+                    "enabled": true
+                }
+            ]
+        },
+        {
+            "name": "Test Environment",
+            "values": [
+                {
+                    "key": "oidc_provider_url",
+                    "value": "https://oidc.test.example.org",
+                    "enabled": true
+                }
+            ]
+        }
+    ]
+}
