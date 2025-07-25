@@ -1,0 +1,95 @@
+<%- include('partials/page-header', { title: 'Active Sessions' }) %>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">Your active sessions</h1>
+
+            <% if (successMessage) { %>
+                <div class="govuk-notification-banner govuk-notification-banner--success" role="alert"
+                    aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                            Success
+                        </h2>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+                        <p class="govuk-notification-banner__heading">
+                            <%= successMessage %>
+                        </p>
+                    </div>
+                </div>
+                <% } %>
+
+                    <% if (sessions && sessions.length> 0) { %>
+                        <table class="govuk-table">
+                            <caption class="govuk-table__caption govuk-table__caption--m">All devices where you're
+                                currently signed in</caption>
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Device</th>
+                                    <th scope="col" class="govuk-table__header">Location</th>
+                                    <th scope="col" class="govuk-table__header">Last active</th>
+                                    <th scope="col" class="govuk-table__header">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <% sessions.forEach(function(session) { %>
+                                    <tr
+                                        class="govuk-table__row <%= session.current ? 'govuk-!-font-weight-bold' : '' %>">
+                                        <td class="govuk-table__cell">
+                                            <%= session.userAgent %>
+                                                <% if (session.current) { %>
+                                                    <div class="govuk-tag">
+                                                        Current session
+                                                    </div>
+                                                    <% } %>
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            <%= session.location || 'Unknown location' %>
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            <%= new Date(session.lastActive).toLocaleString() %>
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            <% if (!session.current) { %>
+                                                <form action="/profile/sessions/revoke" method="post">
+                                                    <input type="hidden" name="session_id" value="<%= session.id %>">
+                                                    <button type="submit"
+                                                        class="govuk-button govuk-button--warning govuk-!-margin-bottom-0"
+                                                        data-module="govuk-button">
+                                                        Sign out
+                                                    </button>
+                                                </form>
+                                                <% } else { %>
+                                                    <span class="govuk-hint">Active now</span>
+                                                    <% } %>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+
+                        <div class="govuk-button-group">
+                            <form action="/profile/sessions/revoke-all" method="post">
+                                <button type="submit" class="govuk-button govuk-button--warning"
+                                    data-module="govuk-button">
+                                    Sign out of all other devices
+                                </button>
+                            </form>
+                        </div>
+                        <% } else { %>
+                            <div class="govuk-panel govuk-panel--confirmation">
+                                <h2 class="govuk-panel__title">
+                                    No active sessions
+                                </h2>
+                                <div class="govuk-panel__body">
+                                    You are only signed in on this device
+                                </div>
+                            </div>
+                            <% } %>
+
+                                <p class="govuk-body">
+                                    <a href="/profile" class="govuk-link">Back to profile</a>
+                                </p>
+        </div>
+    </div>

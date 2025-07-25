@@ -1,0 +1,32 @@
+<%- include('partials/page-header', { title: 'Account Locked' }) %>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-panel govuk-panel--error">
+                <h1 class="govuk-panel__title">
+                    Account temporarily locked
+                </h1>
+                <div class="govuk-panel__body">
+                    Too many failed sign in attempts
+                </div>
+            </div>
+
+            <h2 class="govuk-heading-m">What happened?</h2>
+            <p class="govuk-body">Your account has been temporarily locked because there were too many unsuccessful sign
+                in attempts.</p>
+
+            <h2 class="govuk-heading-m">What you can do now</h2>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Wait for <%= lockoutDuration %> minutes before trying again</li>
+                <li>Reset your password using the link below</li>
+                <li>Contact support if you need immediate assistance</li>
+            </ul>
+
+            <div class="govuk-button-group">
+                <a href="/auth/reset" class="govuk-button" data-module="govuk-button">
+                    Reset your password
+                </a>
+                <a href="/help" class="govuk-link">Contact support</a>
+            </div>
+        </div>
+    </div>

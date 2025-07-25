@@ -1,0 +1,78 @@
+<%- include('partials/page-header', { title: 'Authorize Application' }) %>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">Authorize access request</h1>
+
+            <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-6">
+                <h2 class="govuk-panel__title">
+                    <%= client.client_name || client.client_id %>
+                </h2>
+                <div class="govuk-panel__body">
+                    is requesting access to your account
+                </div>
+            </div>
+
+            <% if (client.logo_uri) { %>
+                <div class="govuk-!-margin-bottom-6 govuk-!-text-align-center">
+                    <img src="<%= client.logo_uri %>" alt="<%= client.client_name %> logo"
+                        style="max-width: 150px; max-height: 150px;">
+                </div>
+                <% } %>
+
+                    <% if (client.client_description || client.client_uri) { %>
+                        <div class="govuk-inset-text">
+                            <% if (client.client_description) { %>
+                                <p>
+                                    <%= client.client_description %>
+                                </p>
+                                <% } %>
+                                    <% if (client.client_uri) { %>
+                                        <p><a href="<%= client.client_uri %>" class="govuk-link" target="_blank"
+                                                rel="noopener noreferrer">Visit application website</a></p>
+                                        <% } %>
+                        </div>
+                        <% } %>
+
+                            <h2 class="govuk-heading-m">This application will be able to:</h2>
+                            <ul class="govuk-list govuk-list--bullet">
+                                <% (scopes || []).forEach(function(scope) { %>
+                                    <li>
+                                        <%= scope.description || scope.value %>
+                                    </li>
+                                    <% }); %>
+                            </ul>
+
+                            <form action="/consent" method="post">
+                                <input type="hidden" name="transaction_id" value="<%= transactionID %>">
+
+                                <div class="govuk-form-group">
+                                    <fieldset class="govuk-fieldset">
+                                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                            Remember this decision
+                                        </legend>
+                                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                            <div class="govuk-checkboxes__item">
+                                                <input class="govuk-checkboxes__input" id="remember" name="remember"
+                                                    type="checkbox" value="yes">
+                                                <label class="govuk-checkboxes__label" for="remember">
+                                                    Don't ask again for this application
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+
+                                <div class="govuk-button-group">
+                                    <button type="submit" name="consent" value="approve" class="govuk-button"
+                                        data-module="govuk-button">
+                                        Allow
+                                    </button>
+                                    <button type="submit" name="consent" value="deny"
+                                        class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                                        Deny
+                                    </button>
+                                </div>
+                            </form>
+        </div>
+    </div>

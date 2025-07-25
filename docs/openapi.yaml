@@ -28,6 +28,24 @@ paths:
                     type: string
                   jwks_uri:
                     type: string
+                  registration_endpoint:
+                    type: string
+                  response_types_supported:
+                    type: array
+                    items:
+                      type: string
+                  subject_types_supported:
+                    type: array
+                    items:
+                      type: string
+                  id_token_signing_alg_values_supported:
+                    type: array
+                    items:
+                      type: string
+                  dpop_signing_alg_values_supported:
+                    type: array
+                    items:
+                      type: string
   /register:
     post:
       summary: Register new user
@@ -41,6 +59,9 @@ paths:
                   type: string
                 password:
                   type: string
+                webid:
+                  type: string
+                  description: Optional WebID for the user
       responses:
         '201':
           description: Registered
@@ -89,6 +110,9 @@ paths:
                   type: string
                 client_id:
                   type: string
+                dpop_jkt:
+                  type: string
+                  description: DPoP JWK Thumbprint for proof of possession
       responses:
         '200':
           description: Token response
@@ -98,6 +122,73 @@ paths:
                 type: object
                 properties:
                   access_token:
+                    type: string
+                  id_token:
+                    type: string
+                  token_type:
+                    type: string
+                    enum:
+                      - Bearer
+                      - DPoP
+                  expires_in:
+                    type: integer
+                  refresh_token:
+                    type: string
+  
+  /jwks.json:
+    get:
+      summary: Get JSON Web Key Set
+      responses:
+        '200':
+          description: JWKS document
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  keys:
+                    type: array
+                    items:
+                      type: object
+  
+  /profile/{username}:
+    get:
+      summary: Get WebID profile
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: WebID profile in Turtle or JSON-LD
+          content:
+            text/turtle:
+              schema:
+                type: string
+            application/ld+json:
+              schema:
+                type: object
+    put:
+      summary: Update WebID profile
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          text/turtle:
+            schema:
+              type: string
+          application/ld+json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Updated
                     type: string
                   token_type:
                     type: string

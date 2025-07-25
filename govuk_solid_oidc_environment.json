@@ -1,0 +1,107 @@
+{
+    "id": "govuk-solid-oidc-env",
+    "name": "GOV.UK Solid OIDC Environment",
+    "values": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3001",
+            "enabled": true
+        },
+        {
+            "key": "client_id",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "client_secret",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "redirect_uri",
+            "value": "https://client.example.org/callback",
+            "enabled": true
+        },
+        {
+            "key": "test_email",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "test_password",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "access_token",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "id_token",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "issuer",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "authorization_endpoint",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "token_endpoint",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "userinfo_endpoint",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "registration_endpoint",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "jwks_uri",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "auth_state",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "auth_nonce",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "auth_code",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "user_id",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "user_webid",
+            "value": "",
+            "enabled": true
+        },
+        {
+            "key": "webid",
+            "value": "",
+            "enabled": true
+        }
+    ],
+    "_postman_variable_scope": "environment"
+}

@@ -1,0 +1,142 @@
+<%- include('partials/page-header', { title: 'Your account' }) %>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">Personal details</h2>
+
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Email
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <%= user.email %>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/profile/edit-email">
+                            Change<span class="govuk-visually-hidden"> email</span>
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Display name
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <%= user.name || 'Not set' %>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/profile/edit-name">
+                            <%= user.name ? 'Change' : 'Add' %><span class="govuk-visually-hidden"> name</span>
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        WebID
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <%= user.webid || 'Not set' %>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/profile/edit-webid">
+                            <%= user.webid ? 'Change' : 'Add' %><span class="govuk-visually-hidden"> WebID</span>
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Password
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        ••••••••
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/profile/change-password">
+                            Change<span class="govuk-visually-hidden"> password</span>
+                        </a>
+                    </dd>
+                </div>
+            </dl>
+
+            <h2 class="govuk-heading-m">Security</h2>
+
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Two-factor authentication
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <%= user.twoFactorEnabled ? 'Enabled' : 'Not enabled' %>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/profile/two-factor">
+                            <%= user.twoFactorEnabled ? 'Manage' : 'Set up' %><span class="govuk-visually-hidden">
+                                    two-factor authentication</span>
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Active sessions
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <%= user.activeSessions || 1 %>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/profile/sessions">
+                            Manage<span class="govuk-visually-hidden"> sessions</span>
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Authorized applications
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <%= user.authorizedClients ? user.authorizedClients.length : 0 %>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/profile/applications">
+                            Manage<span class="govuk-visually-hidden"> applications</span>
+                        </a>
+                    </dd>
+                </div>
+            </dl>
+
+            <h2 class="govuk-heading-m">Account actions</h2>
+
+            <div class="govuk-button-group">
+                <a href="/auth/logout" role="button" draggable="false" class="govuk-button govuk-button--secondary"
+                    data-module="govuk-button">
+                    Sign out
+                </a>
+                <a href="#" role="button" draggable="false" class="govuk-button govuk-button--warning"
+                    data-module="govuk-button">
+                    Delete account
+                </a>
+            </div>
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            <aside class="govuk-related-items" role="complementary">
+                <h2 class="govuk-heading-m">Related content</h2>
+                <ul class="govuk-list">
+                    <li>
+                        <a class="govuk-link" href="#">How to manage your Personal Data Store</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link" href="#">Data privacy information</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link" href="#">Keeping your account secure</a>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+    </div>

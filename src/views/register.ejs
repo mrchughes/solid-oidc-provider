@@ -1,0 +1,101 @@
+<%- include('partials/page-header', { title: 'Create an account' }) %>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form action="/auth/register" method="POST" novalidate>
+                <div class="govuk-form-group <%= errors && errors.email ? 'govuk-form-group--error' : '' %>">
+                    <h1 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--l" for="email">
+                            Email address
+                        </label>
+                    </h1>
+                    <div id="email-hint" class="govuk-hint">
+                        We'll use this to contact you and create your WebID
+                    </div>
+                    <% if (errors && errors.email) { %>
+                        <p id="email-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            <%= errors.email %>
+                        </p>
+                        <% } %>
+                            <input class="govuk-input <%= errors && errors.email ? 'govuk-input--error' : '' %>"
+                                id="email" name="email" type="email" spellcheck="false" autocomplete="email"
+                                aria-describedby="email-hint <%= errors && errors.email ? 'email-error' : '' %>"
+                                value="<%= locals.email || '' %>">
+                </div>
+
+                <div class="govuk-form-group <%= errors && errors.password ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-label--m" for="password">
+                        Create password
+                    </label>
+                    <div id="password-hint" class="govuk-hint">
+                        Your password must be at least 8 characters and include at least one number and one special
+                        character
+                    </div>
+                    <% if (errors && errors.password) { %>
+                        <p id="password-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            <%= errors.password %>
+                        </p>
+                        <% } %>
+                            <input class="govuk-input <%= errors && errors.password ? 'govuk-input--error' : '' %>"
+                                id="password" name="password" type="password" autocomplete="new-password"
+                                aria-describedby="password-hint <%= errors && errors.password ? 'password-error' : '' %>">
+                </div>
+
+                <div class="govuk-form-group <%= errors && errors.confirmPassword ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-label--m" for="confirmPassword">
+                        Confirm password
+                    </label>
+                    <div id="confirmPassword-hint" class="govuk-hint">
+                        Enter your password again
+                    </div>
+                    <% if (errors && errors.confirmPassword) { %>
+                        <p id="confirmPassword-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            <%= errors.confirmPassword %>
+                        </p>
+                        <% } %>
+                            <input
+                                class="govuk-input <%= errors && errors.confirmPassword ? 'govuk-input--error' : '' %>"
+                                id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password"
+                                aria-describedby="confirmPassword-hint <%= errors && errors.confirmPassword ? 'confirmPassword-error' : '' %>">
+                </div>
+
+                <div class="govuk-form-group <%= errors && errors.terms ? 'govuk-form-group--error' : '' %>">
+                    <fieldset class="govuk-fieldset"
+                        aria-describedby="<%= errors && errors.terms ? 'terms-error' : '' %>">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            Terms and conditions
+                        </legend>
+                        <% if (errors && errors.terms) { %>
+                            <p id="terms-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                <%= errors.terms %>
+                            </p>
+                            <% } %>
+                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                    <div class="govuk-checkboxes__item">
+                                        <input class="govuk-checkboxes__input" id="terms" name="terms" type="checkbox"
+                                            value="agree">
+                                        <label class="govuk-label govuk-checkboxes__label" for="terms">
+                                            I agree to the <a href="#" class="govuk-link">terms and conditions</a>
+                                        </label>
+                                    </div>
+                                </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Create account
+                    </button>
+                </div>
+            </form>
+
+            <h2 class="govuk-heading-m">Already have an account?</h2>
+            <p class="govuk-body">
+                <a href="/login" class="govuk-link">Sign in to your account</a>
+            </p>
+        </div>
+    </div>

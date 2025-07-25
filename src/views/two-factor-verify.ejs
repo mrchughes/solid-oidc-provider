@@ -1,0 +1,59 @@
+<%- include('partials/page-header', { title: '2-Factor Authentication' }) %>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">Enter verification code</h1>
+
+            <p class="govuk-body">
+                We've sent a verification code to your authenticator app.
+            </p>
+
+            <form action="/auth/two-factor/verify" method="post">
+                <input type="hidden" name="session_id" value="<%= sessionId %>">
+
+                <div class="govuk-form-group <%= errors && errors.code ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label" for="code">
+                        Authentication code
+                    </label>
+                    <div id="code-hint" class="govuk-hint">
+                        Enter the 6-digit code from your authenticator app
+                    </div>
+                    <% if (errors && errors.code) { %>
+                        <span id="code-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            <%= errors.code %>
+                        </span>
+                        <% } %>
+                            <input
+                                class="govuk-input govuk-input--width-5 <%= errors && errors.code ? 'govuk-input--error' : '' %>"
+                                id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]*"
+                                autocomplete="one-time-code"
+                                aria-describedby="code-hint <%= errors && errors.code ? 'code-error' : '' %>" autofocus>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Verify
+                    </button>
+                </div>
+            </form>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Problems with your code?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>Make sure that:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>The time on your device is correct</li>
+                        <li>You're using the latest code from your authenticator app</li>
+                        <li>You're entering the code for the right account</li>
+                    </ul>
+                    <p>If you still can't access your account, you can <a href="/auth/reset" class="govuk-link">reset
+                            your password</a> or <a href="/help" class="govuk-link">contact support</a>.</p>
+                </div>
+            </details>
+        </div>
+    </div>

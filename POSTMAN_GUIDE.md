@@ -38,6 +38,28 @@ Each service has its own collection:
 - `solid_pds_collection.json` - Solid PDS service
 - `solid_oidc_collection.json` - Solid OIDC Provider
 - `pip_vc_collection.json` - PIP VC Service
+
+### 5. Running Tests with Newman
+
+You can run the Postman tests via the command line using Newman:
+
+```bash
+# From the repository root
+npm run test:postman
+```
+
+This will:
+1. Check if Newman is installed and install it if needed
+2. Verify that the server is running (and start it if it's not)
+3. Run the Postman collection against the local environment
+4. Report the results
+
+#### Newman Requirements
+
+- Node.js 10+
+- npm or yarn
+
+Newman will be installed automatically when you run the test script.
 - `eon_vc_collection.json` - EON VC Service
 
 When making changes to the API:
@@ -65,8 +87,50 @@ Each collection uses the following variables:
 - `base_url` - The base URL for the service
 - `webid` - A test WebID
 - `access_token` - A valid access token
+- `client_id` - The client ID for OIDC flow
+- `client_secret` - The client secret for OIDC flow
+- `redirect_uri` - The redirect URI for OIDC flow
 - `vc_example_jsonld` - Example VC in JSON-LD format
 - `vc_example_turtle` - Example VC in Turtle format
+
+## Pre-request and Post-response Scripts
+
+Each request in the collection includes pre-request and post-response (test) scripts that:
+
+### Pre-request Scripts
+- Set up environment variables required for the request
+- Generate random data when needed
+- Prepare request body parameters
+- Handle authentication logic
+- Log important information for debugging
+
+### Post-response (Test) Scripts
+- Validate HTTP response codes
+- Check response body structure and required fields
+- Verify content types
+- Validate OIDC/VC-specific requirements
+- Store response data in environment variables for subsequent requests
+- Provide detailed test failure messages
+
+**Important**: 
+- Pre-request scripts are executed before the request is sent
+- Post-response (test) scripts are executed after the response is received
+- Both scripts can access and modify environment variables
+
+## OIDC Flow Testing
+
+The Solid OIDC Provider collection includes tests that validate the entire OIDC flow:
+
+1. OIDC Discovery (OpenID Configuration)
+2. JWKS Endpoint
+3. Client Registration
+4. User Registration
+5. User Login
+6. Authorization Code Flow
+7. Token Exchange
+8. UserInfo Endpoint
+
+These tests ensure that the OIDC provider is compliant with the Solid OIDC specification.
 
 ## Collaboration Workflow
 
@@ -82,7 +146,8 @@ All endpoints must have test scripts that validate:
 - Correct HTTP response codes
 - Response body structure
 - Content types
-- Proof signature blocks
+- Authentication requirements
+- Proof signature blocks for VCs
 
 ## Support
 

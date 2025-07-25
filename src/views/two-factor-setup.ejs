@@ -1,0 +1,82 @@
+<%- include('partials/page-header', { title: '2-Factor Authentication Setup' }) %>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">Set up two-factor authentication</h1>
+
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    You will need an authenticator app like Google Authenticator, Microsoft Authenticator, or Authy on
+                    your mobile device.
+                </strong>
+            </div>
+
+            <ol class="govuk-list govuk-list--number">
+                <li>
+                    <h2 class="govuk-heading-m">Scan the QR code with your authenticator app</h2>
+                    <div class="govuk-inset-text govuk-!-text-align-center">
+                        <img src="<%= qrCodeUrl %>" alt="QR Code for two-factor authentication"
+                            style="max-width: 200px;">
+                    </div>
+                    <p class="govuk-body">
+                        Can't scan the code? Use this key instead: <strong>
+                            <%= secret %>
+                        </strong>
+                    </p>
+                </li>
+
+                <li>
+                    <h2 class="govuk-heading-m">Enter the 6-digit code from your app</h2>
+                    <form action="/profile/two-factor/verify" method="post">
+                        <input type="hidden" name="secret" value="<%= secret %>">
+
+                        <div class="govuk-form-group <%= errors && errors.code ? 'govuk-form-group--error' : '' %>">
+                            <label class="govuk-label" for="code">
+                                Verification code
+                            </label>
+                            <div id="code-hint" class="govuk-hint">
+                                Enter the 6-digit code shown in your authenticator app
+                            </div>
+                            <% if (errors && errors.code) { %>
+                                <span id="code-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <%= errors.code %>
+                                </span>
+                                <% } %>
+                                    <input
+                                        class="govuk-input govuk-input--width-5 <%= errors && errors.code ? 'govuk-input--error' : '' %>"
+                                        id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]*"
+                                        autocomplete="one-time-code"
+                                        aria-describedby="code-hint <%= errors && errors.code ? 'code-error' : '' %>"
+                                        autofocus>
+                        </div>
+
+                        <div class="govuk-button-group">
+                            <button class="govuk-button" data-module="govuk-button">
+                                Verify and activate
+                            </button>
+                        </div>
+                    </form>
+                </li>
+            </ol>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        What is two-factor authentication?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>Two-factor authentication (2FA) adds an extra layer of security to your account. In addition to
+                        your password, you'll need a code from your authenticator app when signing in.</p>
+                    <p>This helps protect your account even if your password is compromised.</p>
+                </div>
+            </details>
+
+            <p class="govuk-body">
+                <a href="/profile" class="govuk-link">Cancel and go back to profile</a>
+            </p>
+        </div>
+    </div>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Sign-in Detected</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            color: #0b0c0c;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 580px;
+            margin: 0 auto;
+            padding: 30px 15px;
+        }
+
+        .header {
+            border-bottom: 10px solid #1d70b8;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .alert {
+            background-color: #f3f2f1;
+            border-left: 5px solid #d4351c;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .details {
+            background-color: #f3f2f1;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #00703c;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .footer {
+            border-top: 1px solid #b1b4b6;
+            margin-top: 30px;
+            padding-top: 15px;
+            font-size: 14px;
+            color: #505a5f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://assets.publishing.service.gov.uk/government-frontend/govuk-logo-61414a7b800d540c99d21c37a1d44e3a701e2dd34af78a06e1c76f444dcea8e2.png"
+                alt="GOV.UK">
+        </div>
+
+        <h1>New sign-in to your account</h1>
+
+        <p>Hello,</p>
+
+        <p>We detected a new sign-in to your Solid OIDC Provider account. If this was you, no further action is needed.
+        </p>
+
+        <div class="details">
+            <p><strong>Date and time:</strong> {{timestamp}}</p>
+            <p><strong>Device:</strong> {{device}}</p>
+            <p><strong>Browser:</strong> {{browser}}</p>
+            <p><strong>Location:</strong> {{location}}</p>
+            <p><strong>IP address:</strong> {{ipAddress}}</p>
+        </div>
+
+        <div class="alert">
+            <p>If you did not sign in to your account at this time, someone else may have access to your account. Please
+                secure your account immediately by:</p>
+            <ol>
+                <li>Changing your password</li>
+                <li>Enabling two-factor authentication if not already enabled</li>
+                <li>Reviewing and revoking any suspicious active sessions</li>
+            </ol>
+        </div>
+
+        <a href="{{manageSessionsLink}}" class="button">Manage Active Sessions</a>
+
+        <p>Thank you,<br>The Solid OIDC Provider Team</p>
+
+        <div class="footer">
+            <p>This is an automated email - please do not reply to this address.</p>
+            <p>If you need help, please contact support at <a href="mailto:support@example.com">support@example.com</a>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

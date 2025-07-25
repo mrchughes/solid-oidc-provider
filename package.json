@@ -1,0 +1,48 @@
+{
+    "name": "solid-oidc-provider",
+    "version": "1.0.0",
+    "description": "Solid OIDC Provider for PDS3.0",
+    "main": "src/index.js",
+    "type": "commonjs",
+    "scripts": {
+        "start": "node src/index.js",
+        "dev": "nodemon src/index.js",
+        "test": "jest",
+        "test:postman": "bash scripts/run_postman_tests.sh",
+        "test:postman:summary": "bash scripts/summarize_postman_tests.sh",
+        "setup-govuk": "bash scripts/setup-govuk-assets.sh"
+    },
+    "keywords": [
+        "solid",
+        "oidc",
+        "webid",
+        "authentication"
+    ],
+    "author": "PDS3.0 Team",
+    "license": "MIT",
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "ejs": "^3.1.10",
+        "express": "^4.18.2",
+        "express-ejs-layouts": "^2.5.1",
+        "express-flash": "^0.0.2",
+        "express-session": "^1.17.3",
+        "jose": "^5.10.0",
+        "jsonwebtoken": "^9.0.2",
+        "method-override": "^3.0.0",
+        "morgan": "^1.10.0",
+        "nodemailer": "^6.9.7",
+        "oidc-provider": "^8.4.0",
+        "otplib": "^12.0.1",
+        "qrcode": "^1.5.3",
+        "uuid": "^9.0.1"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "newman": "^6.0.0",
+        "nodemon": "^3.0.2",
+        "supertest": "^6.3.3"
+    }
+}

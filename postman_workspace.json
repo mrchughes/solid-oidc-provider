@@ -5,7 +5,7 @@
     },
     "collections": [
         {
-            "name": "Solid OIDC Provider",
+            "name": "Solid OIDC Provider Must-Pass Collection",
             "path": "./solid_oidc_collection.json"
         }
     ],
@@ -14,8 +14,8 @@
             "name": "Local Development",
             "values": [
                 {
-                    "key": "oidc_provider_url",
-                    "value": "http://localhost:3001",
+                    "key": "base_url",
+                    "value": "http://localhost:3010",
                     "enabled": true
                 },
                 {
@@ -27,6 +27,36 @@
                     "key": "access_token",
                     "value": "dummy_token",
                     "enabled": true
+                },
+                {
+                    "key": "client_id",
+                    "value": "",
+                    "enabled": true
+                },
+                {
+                    "key": "client_secret",
+                    "value": "",
+                    "enabled": true
+                },
+                {
+                    "key": "redirect_uri",
+                    "value": "https://client.example.org/callback",
+                    "enabled": true
+                },
+                {
+                    "key": "user_email",
+                    "value": "test@example.com",
+                    "enabled": true
+                },
+                {
+                    "key": "user_password",
+                    "value": "securePassword123",
+                    "enabled": true
+                },
+                {
+                    "key": "user_webid",
+                    "value": "",
+                    "enabled": true
                 }
             ]
         },
@@ -34,8 +64,48 @@
             "name": "Test Environment",
             "values": [
                 {
-                    "key": "oidc_provider_url",
+                    "key": "base_url",
                     "value": "https://oidc.test.example.org",
+                    "enabled": true
+                },
+                {
+                    "key": "webid",
+                    "value": "https://user.test.example.org/profile/card#me",
+                    "enabled": true
+                },
+                {
+                    "key": "access_token",
+                    "value": "",
+                    "enabled": true
+                },
+                {
+                    "key": "client_id",
+                    "value": "",
+                    "enabled": true
+                },
+                {
+                    "key": "client_secret",
+                    "value": "",
+                    "enabled": true
+                },
+                {
+                    "key": "redirect_uri",
+                    "value": "https://client.test.example.org/callback",
+                    "enabled": true
+                },
+                {
+                    "key": "user_email",
+                    "value": "test@test.example.org",
+                    "enabled": true
+                },
+                {
+                    "key": "user_password",
+                    "value": "securePassword123",
+                    "enabled": true
+                },
+                {
+                    "key": "user_webid",
+                    "value": "",
                     "enabled": true
                 }
             ]

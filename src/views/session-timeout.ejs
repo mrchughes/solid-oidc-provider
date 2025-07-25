@@ -1,0 +1,53 @@
+<%- include('partials/page-header', { title: 'Session Timeout Warning' }) %>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">Your session is about to expire</h1>
+            <p class="govuk-body">For security reasons, your session will expire in <span id="countdown">5:00</span>
+                minutes.</p>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button" id="extend-session">
+                    Continue session
+                </button>
+                <a href="/logout" class="govuk-link">Sign out</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let timeLeft = 300; // 5 minutes in seconds
+            const countdownEl = document.getElementById('countdown');
+            const extendButton = document.getElementById('extend-session');
+
+            const timer = setInterval(function () {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                countdownEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    window.location.href = '/session-expired';
+                }
+            }, 1000);
+
+            extendButton.addEventListener('click', function () {
+                // Send request to extend session
+                fetch('/auth/extend-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Redirect back to the original page
+                            window.location.href = document.referrer || '/';
+                        }
+                    });
+            });
+        });
+    </script>

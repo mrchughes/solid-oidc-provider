@@ -1,0 +1,95 @@
+<%- include('partials/page-header', { title: 'Manage Applications' }) %>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-l">Applications with access to your account</h1>
+
+            <% if (authorizedClients && authorizedClients.length> 0) { %>
+                <div class="govuk-tabs" data-module="govuk-tabs">
+                    <h2 class="govuk-tabs__title">Applications</h2>
+                    <ul class="govuk-tabs__list">
+                        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                            <a class="govuk-tabs__tab" href="#authorized-apps">
+                                Authorized applications (<%= authorizedClients.length %>)
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="govuk-tabs__panel" id="authorized-apps">
+                        <table class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Application</th>
+                                    <th scope="col" class="govuk-table__header">Last accessed</th>
+                                    <th scope="col" class="govuk-table__header">Permissions</th>
+                                    <th scope="col" class="govuk-table__header">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <% authorizedClients.forEach(function(client) { %>
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <div class="govuk-!-font-weight-bold">
+                                                <%= client.name || client.client_id %>
+                                            </div>
+                                            <% if (client.description) { %>
+                                                <div class="govuk-hint govuk-!-margin-bottom-0">
+                                                    <%= client.description %>
+                                                </div>
+                                                <% } %>
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            <%= client.lastAccessed ? new Date(client.lastAccessed).toLocaleString()
+                                                : 'Never' %>
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            <details class="govuk-details" data-module="govuk-details">
+                                                <summary class="govuk-details__summary">
+                                                    <span class="govuk-details__summary-text">
+                                                        View permissions
+                                                    </span>
+                                                </summary>
+                                                <div class="govuk-details__text">
+                                                    <ul class="govuk-list govuk-list--bullet">
+                                                        <% (client.scopes || []).forEach(function(scope) { %>
+                                                            <li>
+                                                                <%= scope.description || scope %>
+                                                            </li>
+                                                            <% }); %>
+                                                    </ul>
+                                                </div>
+                                            </details>
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            <form action="/consent/revoke" method="post">
+                                                <input type="hidden" name="client_id" value="<%= client.client_id %>">
+                                                <button type="submit"
+                                                    class="govuk-button govuk-button--warning govuk-!-margin-bottom-0"
+                                                    data-module="govuk-button">
+                                                    Revoke access
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <% } else { %>
+                    <div class="govuk-panel govuk-panel--confirmation">
+                        <h2 class="govuk-panel__title">
+                            No applications authorized
+                        </h2>
+                        <div class="govuk-panel__body">
+                            You haven't authorized any applications to access your account
+                        </div>
+                    </div>
+                    <% } %>
+
+                        <div class="govuk-button-group govuk-!-margin-top-6">
+                            <a href="/profile" class="govuk-button" data-module="govuk-button">
+                                Back to profile
+                            </a>
+                        </div>
+        </div>
+    </div>

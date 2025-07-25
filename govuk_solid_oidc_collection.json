@@ -1,12 +1,12 @@
 {
     "info": {
-        "name": "Solid OIDC Provider Must-Pass Collection",
+        "name": "Solid OIDC Provider Collection",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-        "description": "This collection tests the essential endpoints of the Solid OIDC Provider service."
+        "description": "This collection tests the Solid OIDC Provider with GOV.UK styling implementation."
     },
     "item": [
         {
-            "name": "OIDC Discovery",
+            "name": "1. OIDC Discovery",
             "request": {
                 "method": "GET",
                 "header": [],
@@ -43,6 +43,7 @@
                             "",
                             "// Store important endpoints for subsequent requests",
                             "var jsonData = pm.response.json();",
+                            "pm.environment.set(\"issuer\", jsonData.issuer);",
                             "pm.environment.set(\"authorization_endpoint\", jsonData.authorization_endpoint);",
                             "pm.environment.set(\"token_endpoint\", jsonData.token_endpoint);",
                             "pm.environment.set(\"userinfo_endpoint\", jsonData.userinfo_endpoint);",
@@ -58,7 +59,7 @@
                         "exec": [
                             "// Initialize any environment variables needed",
                             "if (!pm.environment.get(\"base_url\")) {",
-                            "    pm.environment.set(\"base_url\", \"http://localhost:3010\");",
+                            "    pm.environment.set(\"base_url\", \"http://localhost:3001\");",
                             "}"
                         ]
                     }
@@ -66,7 +67,7 @@
             ]
         },
         {
-            "name": "JWKS",
+            "name": "2. JWKS",
             "request": {
                 "method": "GET",
                 "header": [],
@@ -107,7 +108,7 @@
             ]
         },
         {
-            "name": "Register Client",
+            "name": "3. Register Client",
             "request": {
                 "method": "POST",
                 "header": [
@@ -124,7 +125,7 @@
                 },
                 "body": {
                     "mode": "raw",
-                    "raw": "{\n  \"application_type\": \"web\",\n  \"redirect_uris\": [\"https://client.example.org/callback\"],\n  \"client_name\": \"Test Client\",\n  \"logo_uri\": \"https://client.example.org/logo.png\",\n  \"subject_type\": \"pairwise\",\n  \"grant_types\": [\"authorization_code\", \"refresh_token\"],\n  \"response_types\": [\"code\"],\n  \"token_endpoint_auth_method\": \"client_secret_basic\",\n  \"scope\": \"openid profile email webid\"\n}"
+                    "raw": "{\n  \"application_type\": \"web\",\n  \"redirect_uris\": [\"https://client.example.org/callback\"],\n  \"client_name\": \"Test Client for GOV.UK Styled OIDC Provider\",\n  \"logo_uri\": \"https://client.example.org/logo.png\",\n  \"subject_type\": \"pairwise\",\n  \"grant_types\": [\"authorization_code\", \"refresh_token\"],\n  \"response_types\": [\"code\"],\n  \"token_endpoint_auth_method\": \"client_secret_basic\",\n  \"scope\": \"openid profile email webid\"\n}"
                 }
             },
             "event": [
@@ -156,7 +157,7 @@
             ]
         },
         {
-            "name": "User Registration",
+            "name": "4. User Registration",
             "request": {
                 "method": "POST",
                 "header": [
@@ -176,7 +177,7 @@
                 },
                 "body": {
                     "mode": "raw",
-                    "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"securePassword123\",\n  \"name\": \"Test User\"\n}"
+                    "raw": "{\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"SecurePassword123!\",\n  \"name\": \"Test User\"\n}"
                 }
             },
             "event": [
@@ -193,14 +194,18 @@
                             "    var jsonData = pm.response.json();",
                             "    pm.expect(jsonData).to.have.property('id');",
                             "    pm.expect(jsonData).to.have.property('webid');",
-                            "    pm.expect(jsonData).to.have.property('email').to.eql('test@example.com');",
+                            "    pm.expect(jsonData).to.have.property('email');",
                             "});",
                             "",
                             "// Store user details for subsequent requests",
                             "var jsonData = pm.response.json();",
                             "pm.environment.set(\"user_id\", jsonData.id);",
                             "pm.environment.set(\"user_webid\", jsonData.webid);",
-                            "pm.environment.set(\"user_email\", jsonData.email);"
+                            "pm.environment.set(\"user_email\", jsonData.email);",
+                            "",
+                            "// For login in the next request",
+                            "pm.environment.set(\"test_email\", jsonData.email);",
+                            "pm.environment.set(\"test_password\", \"SecurePassword123!\");"
                         ]
                     }
                 },
@@ -210,15 +215,64 @@
                         "type": "text/javascript",
                         "exec": [
                             "// Generate random user data if needed",
-                            "const randomEmail = `user-${pm.variables.replaceIn('{{$randomUUID}}')}@example.com`;",
-                            "pm.environment.set(\"random_email\", randomEmail);"
+                            "const randomEmail = pm.variables.replaceIn('{{$randomEmail}}');",
+                            "pm.environment.set(\"random_email\", randomEmail);",
+                            "",
+                            "// Update request body with generated email",
+                            "try {",
+                            "    const requestBody = JSON.parse(pm.request.body.raw);",
+                            "    requestBody.email = randomEmail;",
+                            "    pm.request.body.raw = JSON.stringify(requestBody, null, 2);",
+                            "} catch (e) {",
+                            "    console.error(\"Error updating request body:\", e);",
+                            "}"
                         ]
                     }
                 }
             ]
         },
         {
-            "name": "User Login",
+            "name": "5. Login Page (HTML)",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/login",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "login"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response is HTML\", function () {",
+                            "    pm.response.to.have.header(\"Content-Type\");",
+                            "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\");",
+                            "});",
+                            "",
+                            "pm.test(\"HTML contains GOV.UK styling\", function () {",
+                            "    pm.expect(pm.response.text()).to.include(\"govuk-template\");",
+                            "    pm.expect(pm.response.text()).to.include(\"govuk-header\");",
+                            "    pm.expect(pm.response.text()).to.include(\"govuk-frontend\");",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "6. User Login",
             "request": {
                 "method": "POST",
                 "header": [
@@ -238,7 +292,7 @@
                 },
                 "body": {
                     "mode": "raw",
-                    "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"securePassword123\"\n}"
+                    "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"{{test_password}}\"\n}"
                 }
             },
             "event": [
@@ -261,14 +315,40 @@
                             "// Store token for subsequent requests",
                             "var jsonData = pm.response.json();",
                             "pm.environment.set(\"access_token\", jsonData.access_token);",
-                            "pm.environment.set(\"id_token\", jsonData.id_token);"
+                            "if (jsonData.id_token) {",
+                            "    pm.environment.set(\"id_token\", jsonData.id_token);",
+                            "}"
+                        ]
+                    }
+                },
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "// Ensure login credentials are available",
+                            "if (!pm.environment.get(\"test_email\") || !pm.environment.get(\"test_password\")) {",
+                            "    console.warn(\"Missing test credentials for login. Using defaults.\");",
+                            "    pm.environment.set(\"test_email\", \"test@example.com\");",
+                            "    pm.environment.set(\"test_password\", \"SecurePassword123!\");",
+                            "}",
+                            "",
+                            "// Update request body with stored credentials",
+                            "try {",
+                            "    const requestBody = JSON.parse(pm.request.body.raw);",
+                            "    requestBody.email = pm.environment.get(\"test_email\");",
+                            "    requestBody.password = pm.environment.get(\"test_password\");",
+                            "    pm.request.body.raw = JSON.stringify(requestBody, null, 2);",
+                            "} catch (e) {",
+                            "    console.error(\"Error updating request body:\", e);",
+                            "}"
                         ]
                     }
                 }
             ]
         },
         {
-            "name": "Get User Info",
+            "name": "7. Get User Info",
             "request": {
                 "method": "GET",
                 "header": [
@@ -298,7 +378,7 @@
                             "    var jsonData = pm.response.json();",
                             "    pm.expect(jsonData).to.have.property('sub');",
                             "    pm.expect(jsonData).to.have.property('webid');",
-                            "    pm.expect(jsonData).to.have.property('email').to.eql(pm.environment.get(\"user_email\"));",
+                            "    pm.expect(jsonData).to.have.property('email').to.eql(pm.environment.get(\"test_email\"));",
                             "});",
                             "",
                             "pm.test(\"WebID is properly formatted\", function () {",
@@ -312,7 +392,62 @@
             ]
         },
         {
-            "name": "Reset Password Request",
+            "name": "8. Get Profile Page (HTML)",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Cookie",
+                        "value": "connect.sid={{session_id}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/profile",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "profile"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test(\"Status code is 200 or 302\", function () {",
+                            "    pm.expect(pm.response.code).to.be.oneOf([200, 302]);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 200) {",
+                            "    pm.test(\"Response is HTML\", function () {",
+                            "        pm.response.to.have.header(\"Content-Type\");",
+                            "        pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\");",
+                            "    });",
+                            "",
+                            "    pm.test(\"HTML contains GOV.UK styling\", function () {",
+                            "        pm.expect(pm.response.text()).to.include(\"govuk-template\");",
+                            "        pm.expect(pm.response.text()).to.include(\"govuk-header\");",
+                            "        pm.expect(pm.response.text()).to.include(\"govuk-frontend\");",
+                            "    });",
+                            "    ",
+                            "    // Extract session ID from cookies if available",
+                            "    const cookies = pm.cookies.all();",
+                            "    cookies.forEach(function(cookie) {",
+                            "        if (cookie.name === \"connect.sid\") {",
+                            "            pm.environment.set(\"session_id\", cookie.value);",
+                            "        }",
+                            "    });",
+                            "}"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "9. Reset Password Request",
             "request": {
                 "method": "POST",
                 "header": [
@@ -332,7 +467,7 @@
                 },
                 "body": {
                     "mode": "raw",
-                    "raw": "{\n  \"email\": \"{{user_email}}\"\n}"
+                    "raw": "{\n  \"email\": \"{{test_email}}\"\n}"
                 }
             },
             "event": [
@@ -348,6 +483,69 @@
                             "pm.test(\"Response confirms password reset request\", function () {",
                             "    var jsonData = pm.response.json();",
                             "    pm.expect(jsonData).to.have.property('message');",
+                            "});"
+                        ]
+                    }
+                },
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "// Make sure we have a test email",
+                            "if (!pm.environment.get(\"test_email\")) {",
+                            "    pm.environment.set(\"test_email\", \"test@example.com\");",
+                            "}",
+                            "",
+                            "// Update request body",
+                            "try {",
+                            "    const requestBody = JSON.parse(pm.request.body.raw);",
+                            "    requestBody.email = pm.environment.get(\"test_email\");",
+                            "    pm.request.body.raw = JSON.stringify(requestBody, null, 2);",
+                            "} catch (e) {",
+                            "    console.error(\"Error updating request body:\", e);",
+                            "}"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "10. Get Register Page (HTML)",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/register",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "register"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response is HTML\", function () {",
+                            "    pm.response.to.have.header(\"Content-Type\");",
+                            "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\");",
+                            "});",
+                            "",
+                            "pm.test(\"HTML contains GOV.UK styling\", function () {",
+                            "    pm.expect(pm.response.text()).to.include(\"govuk-template\");",
+                            "    pm.expect(pm.response.text()).to.include(\"govuk-header\");",
+                            "    pm.expect(pm.response.text()).to.include(\"govuk-frontend\");",
+                            "    pm.expect(pm.response.text()).to.include(\"govuk-button\");",
+                            "    pm.expect(pm.response.text()).to.include(\"govuk-form-group\");",
                             "});"
                         ]
                     }
@@ -369,7 +567,10 @@
                     "}",
                     "",
                     "// Set current timestamp for rate limiting considerations",
-                    "pm.environment.set(\"current_timestamp\", new Date().toISOString());"
+                    "pm.environment.set(\"current_timestamp\", new Date().toISOString());",
+                    "",
+                    "// Log request for debugging",
+                    "console.log(`[${new Date().toISOString()}] Preparing request: ${pm.request.method} ${pm.request.url}`);"
                 ]
             }
         },
@@ -380,7 +581,7 @@
                 "exec": [
                     "// Global Test Script",
                     "// Log response times for performance monitoring",
-                    "console.log(\"Response time: \" + pm.response.responseTime + \" ms\");",
+                    "console.log(`[${new Date().toISOString()}] Response time: ${pm.response.responseTime} ms`);",
                     "",
                     "// Check Content-Type header for all JSON responses",
                     "if (pm.response.headers.get(\"Content-Type\") && ",

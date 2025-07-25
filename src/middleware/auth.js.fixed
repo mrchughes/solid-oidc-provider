@@ -1,0 +1,118 @@
+const jwt = require('jsonwebtoken');
+const config = require('../config');
+const userService = require('../services/user');
+
+// Authenticate JWT token for API access
+exports.authenticate = (req, res, next) => {
+    try {
+        // Get token from authorization header
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ error: 'Authorization token required' });
+        }
+
+        // Extract token
+        const token = authHeader.split(' ')[1];
+
+        // Verify token
+        const { publicKey } = config.jwtKeys();
+        const decoded = jwt.verify(token, publicKey, {
+            algorithms: ['RS256']
+        });
+
+        // Check if token has webid claim (required for Solid OIDC)
+        if (!decoded.webid) {
+            return res.status(401).json({ error: 'Invalid token: missing webid claim' });
+        }
+
+        // Check if session exists (if sessionId is in token)
+        if (decoded.sessionId) {
+            const sessions = userService.getUserSessions(decoded.id);
+            const session = sessions.find(s => s.id === decoded.sessionId);
+
+            if (!session) {
+                return res.status(401).json({ error: 'Session has expired or been revoked' });
+            }
+
+            // Update session activity
+            session.data.lastActivity = new Date().toISOString();
+        }
+
+        // Add user to request
+        req.user = decoded;
+
+        next();
+    } catch (error) {
+        console.error('Authentication error:', error);
+
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Token expired' });
+        }
+
+        return res.status(401).json({ error: 'Invalid token' });
+    }
+};
+
+// Check if user is authenticated via session (for web routes)
+exports.requireAuth = (req, res, next) => {
+    // Check if user is authenticated
+    if (!req.session.user) {
+        // Store original URL to redirect back after login
+        req.session.returnTo = req.originalUrl;
+        return res.redirect('/login');
+    }
+    
+    // Check if session has timed out
+    if (req.session.lastActive && 
+        (Date.now() - req.session.lastActive > config.security.sessionTimeout)) {
+        
+        // Clear user session
+        req.session.user = null;
+        
+        // Store original URL to redirect back after login
+        req.session.returnTo = req.originalUrl;
+        
+        return res.redirect('/session-expired');
+    }
+    
+    // Update last active timestamp
+    req.session.lastActive = Date.now();
+    
+    // Pass user to templates
+    res.locals.user = req.session.user;
+    
+    next();
+};
+
+// Check authentication without requiring it (for public routes)
+exports.checkAuth = (req, res, next) => {
+    // Check if user is authenticated
+    if (req.session.user) {
+        // Check if session has timed out
+        if (req.session.lastActive && 
+            (Date.now() - req.session.lastActive > config.security.sessionTimeout)) {
+            
+            // Clear user session
+            req.session.user = null;
+            
+            // Store original URL to redirect back after login if it's a protected route
+            if (req.originalUrl !== '/' && 
+                !req.originalUrl.startsWith('/login') && 
+                !req.originalUrl.startsWith('/register') && 
+                !req.originalUrl.startsWith('/forgot-password') &&
+                !req.originalUrl.startsWith('/reset-password')) {
+                req.session.returnTo = req.originalUrl;
+            }
+            
+            return res.redirect('/session-expired');
+        }
+        
+        // Update last active timestamp
+        req.session.lastActive = Date.now();
+        
+        // Pass user to templates
+        res.locals.user = req.session.user;
+    }
+    
+    next();
+};

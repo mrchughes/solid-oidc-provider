@@ -1,0 +1,11 @@
+{
+    "PORT": 3001,
+    "ISSUER": "http://localhost:3001",
+    "COOKIE_SECRET": "solid_oidc_dev_cookie_secret",
+    "EMAIL_FROM": "noreply@example.com",
+    "EMAIL_HOST": "smtp.example.com",
+    "EMAIL_PORT": "587",
+    "EMAIL_SECURE": "false",
+    "EMAIL_USER": "",
+    "EMAIL_PASS": ""
+}
